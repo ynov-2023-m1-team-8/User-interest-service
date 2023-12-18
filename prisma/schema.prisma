@@ -25,3 +25,11 @@ model User {
   email                 String
   interestingProducts   Product[]
 }  
+
+model Filter {
+  id          Int      @id @default(autoincrement())
+  minPrice    Decimal
+  maxPrice    Decimal
+ // createdAt   DateTime @default(now())
+  
+}

@@ -1,0 +1,6 @@
+-- CreateTable
+CREATE TABLE "Filter" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "minPrice" DECIMAL NOT NULL,
+    "maxPrice" DECIMAL NOT NULL
+);
