@@ -114,57 +114,7 @@ exports.postForm = async (req, res, next) => {
   }
 };
 
-exports.postfilter = async (req, res, next) => {
-  try {
-    const { minPrice, maxPrice } = req.body;
 
-    // Enregistrez les choix de filtres dans la base de données
-    const filter = await prisma.filter.create({
-      data:{
-      minPrice,
-      maxPrice,
-      },
-      // ... autres champs du modèle Filter
-    });
 
-    
-    return res.status(200).json({ success: true, data: filter });
-  } catch (error) {
-    console.error('Erreur lors de la soumission des filtres :', error);
-    return res.status(500).json({ error: 'Une erreur est survenue' });
-  }
-};
 
-  exports.getfilters = async (req, res, next) => {
-    try {
-      const filters = await prisma.filter.findMany();
-      return res.status(200).json.send(
-        {
-        success: true,
-        data: filters,
-      },
-      );
-    } catch (error) {
-      console.error('Erreur lors de la récupération des filtres :', error);
-      return res.status(500).json({ error: 'Une erreur est survenue' });
-    }
-  }
-
-exports.getFilterMetrics = async (req, res, next) => {
-  try {
-    // Calculer la moyenne des prix minimum et maximum
-    const avgPrices = await prisma.$queryRaw`
-      SELECT AVG(minPrice) as avgMinPrice, AVG(maxPrice) as avgMaxPrice
-      FROM Filter;
-    `;
-
-    // Faites quelque chose avec les résultats, par exemple, renvoyez-les en tant que réponse JSON
-    return res.json({
-      success: true,
-      data: avgPrices,
-    });
-  } catch (err) {
-    return next(err);
-  }
-};
 
