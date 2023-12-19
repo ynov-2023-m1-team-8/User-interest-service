@@ -1,11 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
 
 const throwError = require('../utils/throwError');
-const nodemailer = require('nodemailer');
-
-
-
 const prisma = new PrismaClient();
+const sendMail = require('../utils/sendMail');
 
 exports.getProducts = async (req, res, next) => {
     try {
@@ -81,36 +78,87 @@ exports.getInterestedUsers = async (req, res, next) => {
   }
 };
 
-
 exports.postForm = async (req, res, next) => {
-  try {
-    const { productId, fname, lname, email } = req.body;
-    // Trouver le produit par son ID
-    const product = await prisma.product.findUnique({
-      where: { id: Number(productId) },
-    });
 
-    if (!product) {
-      const err = throwError('Product not found', 404);
-      return next(err);
-    }
-    //Creer et  Enregistrer l'utilisateur dans la base de données
-    const user = await prisma.user.create({
-      data: {
-        fname,
-        lname,
-        email,
-        interestingProducts: {
-          connect: { id: product.id },
+    try {
+
+      const { productId, fname, lname, email } = req.body;
+
+      // Trouver le produit par son ID
+      const product = await prisma.product.findUnique({
+        where: { id: Number(productId) },
+      });
+
+      //Creer et  Enregistrer l'utilisateur dans la base de données
+      const user = await prisma.user.create({
+        data: {
+          fname,
+          lname,
+          email,
+          interestingProducts: {
+            connect: { id: product.id },
+          },
         },
-      },
-    });
-    res.status(200).json({ message: 'Formulaire soumis avec succès', user });
-  } catch (error) {
-    console.error('Erreur lors de la soumission du formulaire :', error);
-    res.status(500).json({ error: 'Une erreur est survenue' });
-  }
+      });
+
+      console.log('Formulaire soumis avec succès :', user );
+
+      if (user) {
+
+        // send email to Admin 
+        await sendMail(
+          process.env.ADMIN_EMAIL,
+          "[Admin] - Client et produit",
+          `Hello Admin`,
+          `Client : ${user.lname} Produit : ${product.id}`
+        );
+        // return
+        return res.json({
+          success: true,
+          data: product.interestedUser,
+          message: "User interessed ok",
+        });
+      }
+      else{
+        console.error('Erreur lors de la soumission du formulaire :', error);
+      }
+
+    }
+    catch (err) {
+      next(err);
+    }
 };
+
+
+// exports.postForm = async (req, res, next) => {
+//   try {
+//     const { productId, fname, lname, email } = req.body;
+//     // Trouver le produit par son ID
+//     const product = await prisma.product.findUnique({
+//       where: { id: Number(productId) },
+//     });
+
+//     if (!product) {
+//       const err = throwError('Product not found', 404);
+//       return next(err);
+//     }
+//     //Creer et  Enregistrer l'utilisateur dans la base de données
+//     const user = await prisma.user.create({
+//       data: {
+//         fname,
+//         lname,
+//         email,
+//         interestingProducts: {
+//           connect: { id: product.id },
+//         },
+//       },
+//     });
+//     res.status(200).json({ message: 'Formulaire soumis avec succès', user });
+//   } catch (error) {
+//     console.error('Erreur lors de la soumission du formulaire :', error);
+//     res.status(500).json({ error: 'Une erreur est survenue' });
+//   }
+// };
 
 
 
