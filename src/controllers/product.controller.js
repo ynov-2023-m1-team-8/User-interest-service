@@ -105,8 +105,6 @@ exports.postForm = async (req, res, next) => {
         },
       },
     });
-
-
     res.status(200).json({ message: 'Formulaire soumis avec succès', user });
   } catch (error) {
     console.error('Erreur lors de la soumission du formulaire :', error);
