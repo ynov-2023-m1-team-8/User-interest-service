@@ -1,5 +1,4 @@
 const { PrismaClient } = require('@prisma/client');
-
 const throwError = require('../utils/throwError');
 const prisma = new PrismaClient();
 const sendMail = require('../utils/sendMail');
@@ -105,13 +104,14 @@ exports.postForm = async (req, res, next) => {
 
       if (user) {
 
-        // send email to Admin 
+        // // send email to Admin 
         await sendMail(
-          process.env.ADMIN_EMAIL,
+          // process.env.ADMIN_EMAIL,
+          "gervaisines@gmail.com",
           "[Admin] - Client et produit",
-          `Hello Admin`,
-          `Client : ${user.lname} Produit : ${product.id}`
+          `<p>Hello Admin,</p> <p>Il y a un client ${user.fname} ${user.lname} ${user.email} qui est interessé(e) par votre produit !</p> <p>Bien cordialement, mystore.</p>`
         );
+
         // return
         return res.json({
           success: true,

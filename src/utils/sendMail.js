@@ -1,12 +1,13 @@
 const nodemailer = require("nodemailer");
 const sgTransport = require('nodemailer-sendgrid-transport');
 
+//Sendgrid
 const sendEmail = async (mail, subject, text, html) => {
 
     let transporter = nodemailer.createTransport(
         sgTransport({
             auth: {
-                api_key: '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',
+                api_key: process.env.API_SENDMAIL,
             },
         })
     );
@@ -34,4 +35,36 @@ const sendEmail = async (mail, subject, text, html) => {
 
 }
 
-module.exports = sendEmail;
+//FREE ou GMAIL
+// const sendEmail = async (subject, toEmail, otpText) => {
+//     let transporter = nodemailer.createTransport({
+//         host: process.env.SMTP_HOST,
+//         port: process.env.SMTP_PORT,
+//         secure: false,
+//         auth: {
+//           user: process.env.SMTP_USER,
+//           pass: process.env.SMTP_PASSWORD,
+//         },
+//     });
+    
+//     transporter.verify(function (error, success) {
+//     if (error) {
+//         console.log(error);
+//     } else {
+//         console.log("SMTP Server is ready");
+//     }
+//     });
+
+//     let info = await transporter.sendMail({
+//     from: process.env.ADMIN_EMAIL,
+//     to: mail, 
+//     subject: subject,
+//     text: text, 
+//     html: html
+//     });
+
+//     return info;
+// }
+
+ module.exports = sendEmail;
+
