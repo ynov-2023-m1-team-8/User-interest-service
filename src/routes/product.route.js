@@ -5,7 +5,7 @@ const productController = require('../controllers/product.controller');
 
 router.get('/:id', productController.getProduct);
 router.get('/', productController.getProducts);
-router.post('/interested',productController.postForm);//jesuisinterressemodalform
+router.post('/interested', productController.postForm);
 router.get('/:id/interestedusers', productController.getInterestedUsers);
 
 module.exports = router;
